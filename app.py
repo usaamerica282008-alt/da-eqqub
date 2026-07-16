@@ -219,3 +219,4 @@ def admin_spin_abc(draw_type):
 @app.route('/logout')
 def logout():
     session.clear()
+# Haaraa
