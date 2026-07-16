@@ -16,10 +16,15 @@ def webhook():
         
         if text == "/start":
             reply = "🎫 Baga nagaan dhuftan! Bot-iin Eqqub keesanii sirriitti hojjechaa jira."
+            # Bakka kanatti liinkiin Telegram API bifa kanaan sirriitti ijaarameera
             url = f"https://telegram.org{TOKEN}/sendMessage"
-            data = urllib.parse.urlencode({"chat_id": chat_id, "text": reply}).encode("utf-8")
+            
+            payload = {"chat_id": chat_id, "text": reply}
+            data = urllib.parse.urlencode(payload).encode("utf-8")
+            
             try:
-                urllib.request.urlopen(url, data=data)
+                req = urllib.request.Request(url, data=data, headers={'Content-Type': 'application/x-www-form-urlencoded'})
+                urllib.request.urlopen(req)
             except Exception as e:
                 print("Error sending message:", e)
                 
