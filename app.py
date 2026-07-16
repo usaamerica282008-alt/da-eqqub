@@ -5,7 +5,9 @@ import json
 from flask import Flask, request
 
 app = Flask(__name__)
-TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
+
+# Token sirriitti dubbisuuf
+BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '').strip()
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
@@ -16,17 +18,28 @@ def webhook():
         
         if text == "/start":
             reply = "🎫 Baga nagaan dhuftan! Bot-iin Eqqub keesanii sirriitti hojjechaa jira."
-            # Bakka kanatti liinkiin Telegram API bifa kanaan sirriitti ijaarameera
-            url = f"https://telegram.org{TOKEN}/sendMessage"
             
-            payload = {"chat_id": chat_id, "text": reply}
+            # Dogoggora 'nonnumeric port' maqsuuf liinkii bifa kanaan fidhanna
+            url = f"https://telegram.org{BOT_TOKEN}/sendMessage"
+            
+            payload = {
+                "chat_id": str(chat_id),
+                "text": reply
+            }
+            
             data = urllib.parse.urlencode(payload).encode("utf-8")
             
             try:
-                req = urllib.request.Request(url, data=data, headers={'Content-Type': 'application/x-www-form-urlencoded'})
+                # Headers eegumsa qabu dabalanii erguu
+                req = urllib.request.Request(
+                    url, 
+                    data=data, 
+                    headers={'Content-Type': 'application/x-www-form-urlencoded'}
+                )
                 urllib.request.urlopen(req)
+                print(f"Message sent successfully to {chat_id}")
             except Exception as e:
-                print("Error sending message:", e)
+                print("Error sending message from bot:", e)
                 
     return "OK", 200
 
